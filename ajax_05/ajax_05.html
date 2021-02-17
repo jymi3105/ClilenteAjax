@@ -18,7 +18,7 @@
 
 		<!-- PASO 1: petición javascript -->
 		Selecciona editorial<br />
-		<select id="selectEditorial" onchange="peticionLibros();">
+		<select id="selectEditorial" onchange="peticionLibros(document.getElementById('selectEditorial').value);">
 		</select>
 
 		<br /><br />
@@ -50,23 +50,22 @@
 							opcion.innerText = _elemento;
 							document.getElementById("selectEditorial").appendChild(opcion);
 						});
-
-						peticionLibros();
+						peticionLibros(document.getElementById("selectEditorial").value);
 					}
   				};
   			}
 
 
-			function peticionLibros() {
+			function peticionLibros(a) {
 				var peticion;
 				if(window.XMLHttpRequest) {
 					peticion = new XMLHttpRequest();
 				} else if(window.ActiveXObject) {
 					peticion = new ActiveXObject("Microsoft.XMLHTTP");
 				}
-				var veditorial = document.getElementById("selectEditorial").value;
+				var veditorial = a;
 
-				peticion.open('GET','ajax_05.php?editorial=' + veditorial,true);
+				peticion.open('GET','ajax_05.php?editorial=' + a,true);
 				peticion.send(null);
 
 				peticion.onreadystatechange = function (evento) {
