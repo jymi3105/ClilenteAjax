@@ -17,6 +17,7 @@
 
 				$libro->isbn = $fila["Id"];
 				$libro->titulo = $fila["titulo"];
+				$libro->autor = $fila["autor"];
 
 				$listaLibros[] = $libro;
 			}

@@ -12,7 +12,7 @@
 	</style>
 </head>
 
-<body onload="peticionTemperaturas();setInterval(peticionTemperaturas,10000);">
+<body>
 	<h1>ajax_07 - Temperaturas por provincias con JSON</h1>
 	<hr />
 	Requiere una base de datos de temperaturas. Cambiar las temperaturas manualmente en la base de datos.
@@ -29,6 +29,9 @@
 	<div id="datosjson"></div>
 
 	<script type="text/javascript">
+
+	window.onload=peticionTemperaturas();setInterval(peticionTemperaturas, 3000);
+	
 
 		function procesarDatos(datosP) {
 			var fila, celda, estadoTiempo;
@@ -82,6 +85,7 @@
 
 
 		function peticionTemperaturas() {
+			console.log("procesando");
 			var peticion;
 			//FASE 1
 			if (window.XMLHttpRequest) {

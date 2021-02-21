@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>ajax_07 - Temperaturas por provincias con JSON</title>
+	<link rel="icon" type="image/x-icon" href="../recursos/favicon.ico">
+	<style type="text/css">
+		div {
+			border: 2px solid red;
+		}
+	</style>
+</head>
+
+<body onload="peticionTemperaturas();setInterval(peticionTemperaturas,10000);">
+	<h1>ajax_07 - Temperaturas por provincias con JSON</h1>
+	<hr />
+	Requiere una base de datos de temperaturas. Cambiar las temperaturas manualmente en la base de datos.
+	<hr />
+	<br />
+
+	<table border="2">
+		<tbody id="datos"></tbody>
+	</table>
+
+	<hr />
+
+	<h3>Datos desde la base de datos en formato json</h3>
+	<div id="datosjson"></div>
+
+	<script type="text/javascript">
+
+		function peticionTemperaturas() {
+			var peticion;
+			//FASE 1
+			if (window.XMLHttpRequest) {
+				peticion = new XMLHttpRequest();
+			} else if (window.ActiveXObject) {
+				peticion = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			peticion.open('get', 'ajax_07.php', true);
+			peticion.send(null);
+
+			//FASE3
+			peticion.onreadystatechange = function () {
+				if ((peticion.readyState == 4) && (peticion.status == 200)) {
+					document.getElementById("datosjson").innerText = peticion.responseText;
+					var resp = JSON.parse(peticion.responseText);
+					
+					
+
+				}
+
+			};
+
+
+		}
+
+	</script>
+</body>
+
+</html>

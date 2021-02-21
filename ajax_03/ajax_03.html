@@ -1,94 +1,108 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title>ajax_03 - Básico con acceso a una base de datos</title>
-		<link rel="icon" type="image/x-icon" href="../recursos/favicon.ico">
-		<style type="text/css">
-			div {
-				border: 2px solid red;
-			}
-		</style>
-	</head>
-	<body>
-		<h1>ajax_03 - Básico con acceso a una base de datos</h1>
-		<hr />
-		
-		<br /><br />
 
-		<!-- PASO 1: petición javascript -->
-		<button onclick="realizarPeticion();">Realizar petición</button>
+<head>
+	<meta charset="utf-8">
+	<title>ajax_03 - Básico con acceso a una base de datos</title>
+	<link rel="icon" type="image/x-icon" href="../recursos/favicon.ico">
+	<style type="text/css">
+		div {
+			border: 2px solid red;
+		}
+	</style>
+</head>
 
-		<br /><br />
+<body>
+	<h1>ajax_03 - Básico con acceso a una base de datos</h1>
+	<hr />
+	<select onchange="realizarPeticion()" name="numero" id="numero">
+		<option value="1">1</option>
+		<option value="2">2</option>
+		<option value="3">3</option>
+		<option value="4">4</option>
+		<option value="5">5</option>
+		<option value="6">6</option>
+	</select>
 
-		<div id="contenido"></div>
+	<br /><br />
 
-		<script type="text/javascript">
+	<!-- PASO 1: petición javascript -->
+	<button onclick="realizarPeticion();">Realizar petición</button>
 
-			function procesarDatos1(_libros) {
-				var cadenaHTML = "";
+	<br /><br />
 
-				_libros.forEach(function (_elemento) {
-					if(_elemento.hasOwnProperty("isbn"))
-						cadenaHTML += "ISBN: " + _elemento.isbn + "<br />";
-					if(_elemento.hasOwnProperty("titulo"))
-						cadenaHTML += "TITULO: " + _elemento.titulo + "<br />";
-					if(_elemento.hasOwnProperty("autor"))
-						cadenaHTML += "AUTOR: " + _elemento.autor + "<br />";
-					if(_elemento.hasOwnProperty("editorial"))
-						cadenaHTML += "EDITORIAL: " + _elemento.editorial + "<br />";
-					if(_elemento.hasOwnProperty("paginas"))
-						cadenaHTML += "PAGINAS: " + _elemento.paginas + "<br />";
-					if(_elemento.hasOwnProperty("precio"))
-						cadenaHTML += "PRECIO: " + _elemento.precio + "<br />";
-					cadenaHTML += "<br /><hr /><br />";
-				});
+	<div id="contenido"></div>
 
-				document.getElementById("contenido").innerHTML = cadenaHTML;
-			}
+	<script type="text/javascript">
 
-
-			function procesarDatos2(_libros) {
-				var cadenaHTML = "";
-
-				_libros.forEach(function (_elemento) {
-					for(var i in _elemento) {
-						cadenaHTML += i.toUpperCase() + ": " + _elemento[i] + "<br />";
-					}
-					cadenaHTML += "<br /><hr /><br />";
-				});
-
-				document.getElementById("contenido").innerHTML = cadenaHTML;
-			}
-
-
-			function realizarPeticion() {
-				var peticion;
-
-				//PASO 2: Creación del objeto XMLHttpRequest
-				if(window.XMLHttpRequest) {
-					peticion = new XMLHttpRequest();
-				} else if(window.ActiveXObject) {
-					peticion = new ActiveXObject("Microsoft.XMLHTTP");
+		function procesarDatos1(_libros) {
+			var numero=document.getElementById("numero").value;
+			var cadenaHTML = "<table border='1px'><tbody>";
+			cadenaHTML += "<tr><th>ISBN</th><th>TITULO</th><th>AUTOR</th><th>EDITORIAL</th><th>PAGINAS</th><th>PRECIO</th></tr>";
+			_libros.forEach(function (_elemento) {
+				if (_elemento.isbn==numero) {
+					if (_elemento.hasOwnProperty("isbn"))
+						cadenaHTML += "<tr><td>" + _elemento.isbn + "</td>";
+					if (_elemento.hasOwnProperty("titulo"))
+						cadenaHTML += "<td>" + _elemento.titulo + "</td>";
+					if (_elemento.hasOwnProperty("autor"))
+						cadenaHTML += "<td>" + _elemento.autor + "</td>";
+					if (_elemento.hasOwnProperty("editorial"))
+						cadenaHTML += "<td>" + _elemento.editorial + "</td>";
+					if (_elemento.hasOwnProperty("paginas"))
+						cadenaHTML += "<td>" + _elemento.paginas + "</td>";
+					if (_elemento.hasOwnProperty("precio"))
+						cadenaHTML += "<td>" + _elemento.precio + "</td></tr>";
 				}
+				//cadenaHTML += "<br /><hr /><br />";
+			});
+			cadenaHTML += "</tbody></table>"
+			document.getElementById("contenido").innerHTML = cadenaHTML;
+		}
 
-				//PASO 3: Realizar la petición al servidor
-				peticion.open('GET','ajax_03.php',true);
-  				peticion.send(null);
 
-  				//PASO 4: Gestionar la respuesta (en este caso con una función anónima)
-  				peticion.onreadystatechange = function (evento) {
-					if((peticion.readyState == 4) && ((peticion.status == 200) )){
-						//PASO 5: procesar la respuesta
-						//document.getElementById("contenido").innerHTML = peticion.responseText;
+		function procesarDatos2(_libros) {
+			var cadenaHTML = "";
 
-						var libros = JSON.parse(peticion.responseText);
-						procesarDatos1(libros);
-						//procesarDatos2(libros);
-					}
-  				};
+			_libros.forEach(function (_elemento) {
+				for (var i in _elemento) {
+					cadenaHTML += i.toUpperCase() + ": " + _elemento[i] + "<br />";
+				}
+				cadenaHTML += "<br /><hr /><br />";
+			});
+
+			document.getElementById("contenido").innerHTML = cadenaHTML;
+		}
+
+
+		function realizarPeticion() {
+			var peticion;
+
+			//PASO 2: Creación del objeto XMLHttpRequest
+			if (window.XMLHttpRequest) {
+				peticion = new XMLHttpRequest();
+			} else if (window.ActiveXObject) {
+				peticion = new ActiveXObject("Microsoft.XMLHTTP");
 			}
-			
-		</script>
-	</body>
+
+			//PASO 3: Realizar la petición al servidor
+			peticion.open('GET', 'ajax_03.php', true);
+			peticion.send(null);
+
+			//PASO 4: Gestionar la respuesta (en este caso con una función anónima)
+			peticion.onreadystatechange = function (evento) {
+				if ((peticion.readyState == 4) && ((peticion.status == 200))) {
+					//PASO 5: procesar la respuesta
+					//document.getElementById("contenido").innerHTML = peticion.responseText;
+
+					var libros = JSON.parse(peticion.responseText);
+					procesarDatos1(libros);
+					//procesarDatos2(libros);
+				}
+			};
+		}
+
+	</script>
+</body>
+
 </html>

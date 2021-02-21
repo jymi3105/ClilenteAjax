@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>ajax_05 - Seleccionar libros por editorial</title>
+	<link rel="icon" type="image/x-icon" href="../recursos/favicon.ico">
+	<style type="text/css">
+		div {
+			border: 2px solid red;
+		}
+	</style>
+</head>
+
+<body onload="peticionEditoriales();">
+	<h1>ajax_05 - Seleccionar libros por editorial</h1>
+	<hr />
+
+	<br /><br />
+
+	<!-- PASO 1: petición javascript -->
+	Selecciona editorial<br />
+	<select id="selectEditorial" onchange="peticionLibros();">
+	</select>
+
+	<br /><br />
+
+	Selecciona libro<br />
+	<select id="selectLibros"></select>
+
+	<script type="text/javascript">
+
+		function peticionEditoriales() {
+			var peticion;
+			if (window.XMLHttpRequest) {
+				peticion = new XMLHttpRequest();
+			} else if (window.ActiveXObject) {
+				peticion = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+
+			//AHORA HAY QUE ABRIRLA Y ENVIARLA
+
+			peticion.open('GET', 'ajax_05.php', true);
+			peticion.send(null);
+
+			peticion.onreadystatechange = function (evento) {
+				if ((peticion.readyState == 4) && (peticion.status == 200)) {
+					document.getElementById("selectEditorial").innerHTML = "";
+					var editoriales = JSON.parse(peticion.responseText);
+					var opcion = "";
+
+
+					editoriales.forEach(function (elemento) {
+						opcion = document.createElement("option");
+						opcion.innerText = elemento;
+						document.getElementById("selectEditorial").appendChild(opcion);
+					});
+					peticionLibros();
+				} else {
+					console.log("no way");
+				}
+			}
+
+		}
+
+
+		function peticionLibros() {
+			var peticion;
+			if (window.XMLHttpRequest) {
+				peticion = new XMLHttpRequest();
+			} else if (window.ActiveXObject) {
+				peticion = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			var edit = document.getElementById("selectEditorial").value;
+			//AHORA HAY QUE ABRIRLA Y ENVIARLA
+			peticion.open('GET', 'ajax_05.php?editorial=' + edit, true);
+			peticion.send(null);
+
+			peticion.onreadystatechange = function (evento) {
+				if ((peticion.readyState == 4) && (peticion.status == 200)) {
+					var libros = JSON.parse(peticion.responseText);
+					document.getElementById("selectLibros").innerHTML="";
+					libros.forEach(function (elemento) {
+						var opcion = document.createElement("option");
+						opcion.setAttribute("value", elemento.isbn);
+						opcion.innerHTML = elemento.titulo;
+						document.getElementById("selectLibros").appendChild(opcion);
+						console.log(elemento.titulo);
+					});
+				}
+			}
+		}
+
+	</script>
+</body>
+
+</html>

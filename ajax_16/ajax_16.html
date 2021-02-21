@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<title>ajax_16 - Ajax con jQuery - ajaxSend, ajaxStart, ajaxStop, ajaxSuccess, ajaxComplete, ajaxError</title>
-		<link rel="icon" type="image/x-icon" href="../recursos/favicon.ico">
+		
 		<script type="text/javascript" src="../recursos/jquery-3.5.1.js"></script>
 		<style type="text/css">
 			div {
@@ -53,7 +53,7 @@
 					$("div").append("Ejecución antes la consulta<br />");
 					
 					$.ajax({
-						url: "ajax_14446.php", //Cambiar por uno que no exista
+						url: "ajax_16.php", //Cambiar por uno que no exista
 						type: "get",
 						success: function (datos) {
 							$("div").append(datos);

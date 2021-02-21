@@ -44,7 +44,7 @@
 					if((peticion.readyState == 4) && ((peticion.status == 200) )){
 						//PASO 5: procesar la respuesta
 						//QUE SERA UN ARCHIVO JSON
-						document.getElementById("contenido").innerText += peticion.responseText;
+						document.getElementById("contenido").innerText += peticion.responseText.titulo;
 					}
   				};
 			}

@@ -50,8 +50,9 @@
 					var caja=document.getElementById("texto");
 					var texto=caja.value;
 					peticion.open('GET','ajax_06.php?texto='+texto,true);
-					peticion.onreadystatechange=procesadatos;
 					peticion.send(null);
+					peticion.onreadystatechange=procesadatos;
+					
 				}
 			}
 			
