@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>ajax_08 - Insertar/modificar provincia en la base de datos de temperaturas</title>
+	<link rel="icon" type="image/x-icon" href="../recursos/favicon.ico">
+	<style>
+		div {
+			margin: 0.5cm;
+		}
+	</style>
+</head>
+
+<body>
+	<h1>ajax_08 - Insertar/modificar provincia en la base de datos de temperaturas</h1>
+	<hr />
+	<div>Código<br /><input type="number" id="codigo"></div>
+	<div>Provincia<br /><input type="text" id="provincia"></div>
+	<div>Temperatura<br /><input type="number" id="temperatura"></div>
+	<div>Estado<br />
+		<select name="estado" id="estado">
+			<option value="1">Despejado</option>
+			<option value="2">Nuboso</option>
+			<option value="3">Niebla</option>
+			<option value="4">Chubascos</option>
+			<option value="5">Nieve</option>
+			<option value="6">Ventoso</option>
+		</select>
+	</div>
+	<div><input type="button" onclick="insertarRegistro();" value="Insertar/Modificar registro" /></div>
+
+	<div id="contenido"></div>
+
+	<script type="text/javascript">
+
+		function insertarRegistro() {
+			var codigo = document.getElementById("codigo").value;
+			var provincia = document.getElementById("provincia").value;
+			var temperatura = document.getElementById("temperatura").value;
+			var estado = document.getElementById("estado").value;
+			var peticion, parametros;
+			parametros = 'codigo=' + codigo + '&provincia=' + provincia + '&temperatura=' + temperatura + '&estado=' + estado;
+			if (window.XMLHttpRequest) {
+				peticion = new XMLHttpRequest;
+			} else if (window.ActiveXObject) {
+				peticion = new ActiveXObject('Microsoft.XMLHTTP');
+			}
+
+			peticion.open('GET', 'ajax_08.php?' + parametros, true);
+			peticion.send(null);
+
+			peticion.onreadystatechange = function () {
+				if ((peticion.readyState == 4) && (peticion.status == 200)) {
+					document.getElementById("contenido").innerHTML = peticion.responseText;
+					console.log("insertado");
+				}
+			}
+			document.getElementById("codigo").value="";
+			document.getElementById("provincia").value="";
+			document.getElementById("temperatura").value="";
+			document.getElementById("estado").value="";
+		}
+
+	</script>
+</body>
+
+</html>

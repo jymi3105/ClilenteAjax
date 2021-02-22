@@ -44,11 +44,16 @@
 			//FASE3
 			peticion.onreadystatechange = function () {
 				if ((peticion.readyState == 4) && (peticion.status == 200)) {
-					document.getElementById("datosjson").innerText = peticion.responseText;
-					var resp = JSON.parse(peticion.responseText);
+					var datos = JSON.parse(peticion.responseText);
+					var tabla = document.getElementById("datos");
 					
+					datos.forEach(function (elemento){
+						var fila=document.createElement("tr");
+						for (var i in elemento) {
+							console.log(elemento[i]);
+						}
+					});
 					
-
 				}
 
 			};

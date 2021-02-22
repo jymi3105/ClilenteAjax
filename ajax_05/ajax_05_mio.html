@@ -31,33 +31,33 @@
 	<script type="text/javascript">
 
 		function peticionEditoriales() {
+
 			var peticion;
 			if (window.XMLHttpRequest) {
 				peticion = new XMLHttpRequest();
 			} else if (window.ActiveXObject) {
 				peticion = new ActiveXObject("Microsoft.XMLHTTP");
 			}
-
-			//AHORA HAY QUE ABRIRLA Y ENVIARLA
-
 			peticion.open('GET', 'ajax_05.php', true);
 			peticion.send(null);
 
 			peticion.onreadystatechange = function (evento) {
 				if ((peticion.readyState == 4) && (peticion.status == 200)) {
-					document.getElementById("selectEditorial").innerHTML = "";
-					var editoriales = JSON.parse(peticion.responseText);
-					var opcion = "";
 
+					var editorial = JSON.parse(peticion.responseText);
+					var numEditoriales = editorial.length;
+					var texto = "";
+					var seleccion = document.getElementById("selectEditorial");
 
-					editoriales.forEach(function (elemento) {
-						opcion = document.createElement("option");
-						opcion.innerText = elemento;
-						document.getElementById("selectEditorial").appendChild(opcion);
-					});
+					for (let i = 0; i < numEditoriales; i++) {
+						texto = editorial[i];
+						var opcion = document.createElement("option");
+						opcion.setAttribute("value", texto);
+						opcion.innerHTML = texto;
+						seleccion.appendChild(opcion);
+					}
 					peticionLibros();
-				} else {
-					console.log("no way");
+					//console.log(editorial.length);
 				}
 			}
 
@@ -65,30 +65,37 @@
 
 
 		function peticionLibros() {
+			var editorial = document.getElementById("selectEditorial").value;
+
 			var peticion;
 			if (window.XMLHttpRequest) {
 				peticion = new XMLHttpRequest();
 			} else if (window.ActiveXObject) {
 				peticion = new ActiveXObject("Microsoft.XMLHTTP");
 			}
-			var edit = document.getElementById("selectEditorial").value;
-			//AHORA HAY QUE ABRIRLA Y ENVIARLA
-			peticion.open('GET', 'ajax_05.php?editorial=' + edit, true);
+
+			peticion.open('GET', 'ajax_05.php?editorial=' + editorial, true);
 			peticion.send(null);
 
 			peticion.onreadystatechange = function (evento) {
 				if ((peticion.readyState == 4) && (peticion.status == 200)) {
 					var libros = JSON.parse(peticion.responseText);
-					document.getElementById("selectLibros").innerHTML="";
-					libros.forEach(function (elemento) {
-						var opcion = document.createElement("option");
-						opcion.setAttribute("value", elemento.isbn);
-						opcion.innerHTML = elemento.titulo;
-						document.getElementById("selectLibros").appendChild(opcion);
-						console.log(elemento.titulo);
-					});
+					var tamanioLibros = libros.length;
+					var texto;
+					var selecion=document.getElementById("selectLibros");
+					selecion.innerHTML="";
+					for (let i = 0; i < tamanioLibros; i++) {
+						texto=libros[i];
+						var opcion=document.createElement("option");
+						opcion.innerHTML=texto.titulo;
+						opcion.setAttribute("value", texto.isbn);
+						selecion.appendChild(opcion);
+						
+					}
+
 				}
 			}
+
 		}
 
 	</script>
