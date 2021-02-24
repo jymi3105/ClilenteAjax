@@ -109,37 +109,39 @@
 	<script type="text/javascript">
 
 		$(document).ready(function () {
-			$("#boton").click(function () {
-				$("table tr").find("td:eq(0)").text(function (fila, isbn) {
+			$('#boton').click(function () {
+				$('table tr').find('td:eq(0)').text(function (fila, isbn) {
+					console.log("fila:" + fila + " isbn: " + isbn);
 					$.ajax({
-						url: 'ajax_14.php',
-						type: 'get',
-						data: 'isbn=' + isbn,
-						dataType: 'text',
+						url: "ajax_14.php",
+						type: "get",
+						//ESTE ES EL DATO QUE VA A ENVIAR AL SERVIDOR
+						data: "isbn=" + isbn,
+						dataType: "text",
+						//FUNCION QUE SE EJECUTA EN CASO DE EXITO
+						//LO QUE ME RETORNA EL SERVIDOR LO GESTIONO COMO DESCRIBA EN LA FUNCION
 						success: function (datos, estado, xhr) {
+							console.log(estado);
 							var libros = JSON.parse(datos);
+							var tamanmio = $('table tr:eq(' + (fila + 1) + ')').children('td').length;
+							for (let i = 0; i < tamanmio; i++) {
 
-							var numCeldas = $("table tr:eq(" + (fila + 1) + ")").children("td").length;
-							for (let i = 1; i < numCeldas; i++) {
-								if ($("table tr:eq(" + (fila + 1) + ") td:eq("+i+")").html()=="") {
+								if ($('table tr:eq(' + (fila + 1) + ')').children('td:eq(' + i + ')').text() == '') {
+									//console.log("No hay algo");
 									switch (i) {
-										case 1: $("table tr:eq(" + (fila + 1) + ") td:eq("+i+")").html(libros.titulo).wrapInner("<span>"); break;
-										case 2: $("table tr:eq(" + (fila + 1) + ") td:eq("+i+")").html(libros.autor).wrapInner("<span>"); break;
-										case 3: $("table tr:eq(" + (fila + 1) + ") td:eq("+i+")").html(libros.editorial).wrapInner("<span>"); break;
-										case 4: $("table tr:eq(" + (fila + 1) + ") td:eq("+i+")").html(libros.paginas).wrapInner("<span>"); break;
-										case 5: $("table tr:eq(" + (fila + 1) + ") td:eq("+i+")").html(libros.precio).wrapInner("<span>"); break;
-
+										case 1: $('table tr:eq(' + (fila + 1) + ')').children('td:eq(' + i + ')').text(libros.titulo); break;
+										case 2: $('table tr:eq(' + (fila + 1) + ')').children('td:eq(' + i + ')').text(libros.autor); break;
+										case 3: $('table tr:eq(' + (fila + 1) + ')').children('td:eq(' + i + ')').text(libros.editorial); break;
+										case 4: $('table tr:eq(' + (fila + 1) + ')').children('td:eq(' + i + ')').text(libros.paginas); break;
+										case 5: $('table tr:eq(' + (fila + 1) + ')').children('td:eq(' + i + ')').text(libros.precio).wrapInner('<span>'); break;
 									}
 								}
-								console.log($("table tr:eq(" + (fila + 1) + ") td:eq("+i+")").html());
 							}
-
 						},
-						error: function (datos, estado, xhr) { alert(estado + " - " + error); }
+						error: function (xhr, estado, error) { alert(estado + " - " + error); }
+
+
 					});
-
-
-
 				});
 			});
 		});

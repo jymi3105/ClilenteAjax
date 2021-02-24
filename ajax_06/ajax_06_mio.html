@@ -24,33 +24,40 @@
 
 	<script type="text/javascript">
 		var peticion;
-
+		document.getElementById("texto").addEventListener("keydown", function (event) {
+			if (event.keyCode == 72) {
+				event.preventDefault();
+			}
+		});
 		function pedirLibros(event) {
-			if (window.XMLHttpRequest) {
-				peticion = new XMLHttpRequest();
-			} else if (window.ActiveXObject) {
-				peticion = new ActiveXObject("Microsoft.XMLHTTP");
-			}
-			var texto = document.getElementById("texto").value;
-			peticion.open('GET', 'ajax_06.php?texto=' + texto, true);
-			peticion.send(null);
+			console.log(event.keyCode);
+			if ((event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 65 && event.keyCode <= 90) ||
+				(event.keyCode >= 219 && event.keyCode <= 222) || (event.keyCode >= 186 && event.keyCode <= 192) ||
+				(event.keyCode == 32)) {
 
-			peticion.onreadystatechange = function () {
-				if ((peticion.readyState == 4) && (peticion.status == 200)) {
-					var resp = JSON.parse(peticion.responseText);
-					console.log(resp);
-					if (resp != null) {
-						var caja = document.getElementById("texto");
-						var longEscrita=caja.value.length;
-						caja.value = resp;
-						caja.selectionStart=longEscrita;
-						caja.setSelectionRange(longEscrita, caja.value.length);
-					} else {
-						console.log("no hay respuesta");
+				if (window.XMLHttpRequest) {
+					peticion = new XMLHttpRequest();
+				} else if (window.ActiveXObject) {
+					peticion = new ActiveXObject("Microsoft.XMLHTTP");
+				}
+				var texto = document.getElementById("texto").value;
+				var longTexto = texto.length;
+				peticion.open('GET', 'ajax_06.php?texto=' + texto, true);
+				peticion.send(null);
+
+				peticion.onreadystatechange = function () {
+					if ((peticion.readyState == 4) && (peticion.status == 200)) {
+						var libro = JSON.parse(peticion.responseText);
+						if (libro != null) {
+							var caja = document.getElementById("texto");
+							caja.value = libro;
+							caja.selectionStart = longTexto;
+							caja.selectionEnd = caja.value.length;
+							//caja.setSelectionRange(longTexto, caja.value.length);
+						}
 					}
-				} 
+				}
 			}
-
 
 		}
 

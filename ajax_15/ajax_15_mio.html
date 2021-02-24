@@ -30,8 +30,21 @@
 	<div></div>
 
 	<script type="text/javascript">
-
-
+		$('#isbn').change(function () {
+			var isbn = $("#isbn").val();
+			$.ajax({
+				url: "ajax_15.php",
+				type: "get",
+				data: "isbn=" + isbn,
+				dataType: "text",
+				success: function (datos, estado, xhr) {
+					console.log(datos);
+					$('div').text(datos);
+				},
+				error: function (xhr, estado, error) { alert(estado + " - " + error); }
+	
+			});
+		});
 	</script>
 	</body>
 
