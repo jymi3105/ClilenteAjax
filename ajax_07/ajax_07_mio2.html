@@ -50,8 +50,8 @@ window.onload=peticionTemperaturas();setInterval(peticionTemperaturas, 8000);
 			peticion.onreadystatechange = function (evento) {
 				
 				if ((peticion.readyState == 4) && ((peticion.status == 200))) {
-					var registros=JSON.parse(peticion.responseText);
-					
+					var datos=JSON.parse(peticion.responseText);
+					document.getElementById("datosjson").innerHTML=peticion.responseText;
 					var fila=document.createElement("tr");
 					var celda=document.createElement("th");
 					celda.innerHTML="CODIGO";
@@ -66,35 +66,19 @@ window.onload=peticionTemperaturas();setInterval(peticionTemperaturas, 8000);
 					celda.innerHTML="ESTADO";
 					fila.appendChild(celda);
 					tabla.appendChild(fila);
-					for (let i = 0; i < registros.length; i++) {
-						fila=document.createElement("tr");
-						for (key in registros[i]) {				
-							if(key=='codigo' || key=='provincia' || key=='temperatura'){
-								celda=document.createElement("td");
-								celda.innerHTML=registros[i][key];
-								fila.appendChild(celda);
-							}
-						
-							if(key=='estado'){
-								celda=document.createElement("td");
-								var valor=registros[i][key];
-								switch (valor) {
-									case '1': celda.innerHTML="DESPEJADO"; break;
-									case '2': celda.innerHTML="LLUVIOSO"; break;
-									case '3': celda.innerHTML="NUBLADO"; break;
-									case '4': celda.innerHTML="TORMENTOSO"; break;
-									case '5': celda.innerHTML="VENTOSO"; break;
-									case '6': celda.innerHTML="NIEBLA"; break;
 
-								}
-								fila.appendChild(celda);
-							}
-							
+					for (let i = 0; i < datos.length; i++) {
+						fila=document.createElement("tr");
+						for (const j in datos[i]) {
+							celda=document.createElement("td");
+							celda.innerHTML=datos[i][j];
+							fila.appendChild(celda);
 						}
 						tabla.appendChild(fila);
-						//console.log(registros[i]);	
 					}
-					console.log(registros.length);
+
+					//console.log(datos);	
+
 				}
 			}
 		}

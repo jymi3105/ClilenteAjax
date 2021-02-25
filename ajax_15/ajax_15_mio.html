@@ -38,7 +38,9 @@
 				data: "isbn=" + isbn,
 				dataType: "text",
 				success: function (datos, estado, xhr) {
-					console.log(datos);
+					
+					var datosJSON=JSON.parse(datos);
+					console.log(datosJSON);
 					$('div').text(datos);
 				},
 				error: function (xhr, estado, error) { alert(estado + " - " + error); }

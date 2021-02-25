@@ -4,7 +4,6 @@
 <head>
 	<meta charset="utf-8">
 	<title>ajax_14 - Ajax con jQuery - Rellenar datos de la tabla de libros</title>
-	<link rel="icon" type="image/x-icon" href="../recursos/favicon.ico">
 	<script type="text/javascript" src="recursos/jsPDF/jspdf.js"></script>
 	<script type="text/javascript" src="../recursos/jquery-3.5.1.js"></script>
 	<style>
@@ -109,14 +108,39 @@
 
 	<script type="text/javascript">
 
+		function marca(origenX, origenY) {
+			pdf.setLineWidth(0.6);
+			var v = 2;
+			pdf.lines([[v, v]], origenX + 1, origenY + 1);
+			pdf.lines([[v, -v]], origenX + 1, origenY + 4 - 1);
+
+		}
+
 		function crearPDF() {
-			pdf = new jsPDF();
+			var pdf = new jsPDF();
 			pdf.setFontSize(15);
 			pdf.setFont("helvetica", "bold");
 
 			pdf.text(25, 15, "LIBROS Y DATOS DE NUESTRA LIBRERIA");
+			var hIni = 20;
+			var vIni = 20;
 
+			for (hIni = 20; hIni < 110; hIni = hIni + 20) {
+				pdf.lines([[170, 0]], 20, hIni);
 
+			}
+
+			for (var i = 0; i < 5; i++) {
+				pdf.lines([[0, 110]], vIni, 20);
+				pdf.text(vIni, 30, "CODIGO");
+				vIni = vIni + 40;
+			}
+
+			pdf.setLineWidth(3);
+			pdf.setFillColor(50,70,150);
+			pdf.setDrawColor(0, 255, 0);
+			pdf.rect(30, 30,6,6, 'F');
+			pdf.roundedRect(60, 50,60,60,6,6, 'DF');
 
 			var es_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
 			if (es_chrome) {
@@ -128,12 +152,11 @@
 			if (es_firefox) {
 				pdf.output('datauri');
 			}
-
-
 		}
 
 		$(document).ready(function () {
 			$('#boton').click(function () {
+
 				$("table tr").find("td:eq(0)").text(function (fila, isbn) {
 					$.ajax({
 						url: "ajax_14.php",
@@ -155,11 +178,10 @@
 									}
 								}
 							}
-							crearPDF();
 						}
-						
 					});
 				});
+				crearPDF();
 			});
 		});
 
