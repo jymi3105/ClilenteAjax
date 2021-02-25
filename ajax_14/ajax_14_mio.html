@@ -5,6 +5,7 @@
 	<meta charset="utf-8">
 	<title>ajax_14 - Ajax con jQuery - Rellenar datos de la tabla de libros</title>
 	<link rel="icon" type="image/x-icon" href="../recursos/favicon.ico">
+	<script type="text/javascript" src="recursos/jsPDF/jspdf.js"></script>
 	<script type="text/javascript" src="../recursos/jquery-3.5.1.js"></script>
 	<style>
 		table,
@@ -108,39 +109,55 @@
 
 	<script type="text/javascript">
 
+		function crearPDF() {
+			pdf = new jsPDF();
+			pdf.setFontSize(15);
+			pdf.setFont("helvetica", "bold");
+
+			pdf.text(25, 15, "LIBROS Y DATOS DE NUESTRA LIBRERIA");
+
+
+
+			var es_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+			if (es_chrome) {
+				var win = window.open();
+				win.document.write('<iframe src="' + pdf.output('datauri') + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>');
+			}
+
+			var es_firefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+			if (es_firefox) {
+				pdf.output('datauri');
+			}
+
+
+		}
+
 		$(document).ready(function () {
 			$('#boton').click(function () {
-				$('table tr').find('td:eq(0)').text(function (fila, isbn) {
-					console.log("fila:" + fila + " isbn: " + isbn);
+				$("table tr").find("td:eq(0)").text(function (fila, isbn) {
 					$.ajax({
 						url: "ajax_14.php",
 						type: "get",
-						//ESTE ES EL DATO QUE VA A ENVIAR AL SERVIDOR
 						data: "isbn=" + isbn,
 						dataType: "text",
-						//FUNCION QUE SE EJECUTA EN CASO DE EXITO
-						//LO QUE ME RETORNA EL SERVIDOR LO GESTIONO COMO DESCRIBA EN LA FUNCION
 						success: function (datos, estado, xhr) {
-							console.log(estado);
-							var libros = JSON.parse(datos);
-							var tamanmio = $('table tr:eq(' + (fila + 1) + ')').children('td').length;
-							for (let i = 0; i < tamanmio; i++) {
-
-								if ($('table tr:eq(' + (fila + 1) + ')').children('td:eq(' + i + ')').text() == '') {
-									//console.log("No hay algo");
+							var dat = JSON.parse(datos);
+							var numCeldas = $("table tr:eq(" + (fila + 1) + ")").children("td").length;
+							for (let i = 1; i < numCeldas; i++) {
+								if ($("table tr:eq(" + (fila + 1) + ")").children("td:eq(" + i + ")").text() == "") {
 									switch (i) {
-										case 1: $('table tr:eq(' + (fila + 1) + ')').children('td:eq(' + i + ')').text(libros.titulo); break;
-										case 2: $('table tr:eq(' + (fila + 1) + ')').children('td:eq(' + i + ')').text(libros.autor); break;
-										case 3: $('table tr:eq(' + (fila + 1) + ')').children('td:eq(' + i + ')').text(libros.editorial); break;
-										case 4: $('table tr:eq(' + (fila + 1) + ')').children('td:eq(' + i + ')').text(libros.paginas); break;
-										case 5: $('table tr:eq(' + (fila + 1) + ')').children('td:eq(' + i + ')').text(libros.precio).wrapInner('<span>'); break;
+										case 1: $("table tr:eq(" + (fila + 1) + ")").children("td:eq(" + i + ")").text(dat.titulo).wrapInner("<span>"); break;
+										case 2: $("table tr:eq(" + (fila + 1) + ")").children("td:eq(" + i + ")").text(dat.autor).wrapInner("<span>"); break;
+										case 3: $("table tr:eq(" + (fila + 1) + ")").children("td:eq(" + i + ")").text(dat.editorial).wrapInner("<span>"); break;
+										case 4: $("table tr:eq(" + (fila + 1) + ")").children("td:eq(" + i + ")").text(dat.paginas).wrapInner("<span>"); break;
+										case 5: $("table tr:eq(" + (fila + 1) + ")").children("td:eq(" + i + ")").text(dat.precio).wrapInner("<span>"); break;
+										default: break;
 									}
 								}
 							}
-						},
-						error: function (xhr, estado, error) { alert(estado + " - " + error); }
-
-
+							crearPDF();
+						}
+						
 					});
 				});
 			});

@@ -30,8 +30,10 @@
 
 	<script type="text/javascript">
 
-		function peticionEditoriales() {
+		var editorial = document.getElementById("selectEditorial");
+		var librosEdit = document.getElementById("selectLibros");
 
+		function peticionEditoriales() {
 			var peticion;
 			if (window.XMLHttpRequest) {
 				peticion = new XMLHttpRequest();
@@ -43,57 +45,51 @@
 
 			peticion.onreadystatechange = function (evento) {
 				if ((peticion.readyState == 4) && (peticion.status == 200)) {
-					var libros =JSON.parse(peticion.responseText);
-					var seleccion=document.getElementById("selectEditorial");
-
-					for (let i = 0; i < libros.length; i++) {
-						var opcion=document.createElement("option");
-						opcion.innerHTML=libros[i];
-						opcion.setAttribute("value", libros[i]);
-						seleccion.appendChild(opcion);
-					}
+					var editoriales = JSON.parse(peticion.responseText);
+					editorial.innerHTML = "";
+					editoriales.forEach(function (elemento) {
+						var opcion = document.createElement("option");
+						opcion.innerHTML = elemento;
+						opcion.setAttribute("value", elemento);
+						editorial.appendChild(opcion);
+					});
+					
+					
 					peticionLibros();
-					//console.log(libros[0]);
 				}
-
-
 			}
+
 
 		}
 
-
 		function peticionLibros() {
-		
-			var editorial=document.getElementById("selectEditorial").value;
-			var peticion;
-			if (window.XMLHttpRequest) {
-				peticion = new XMLHttpRequest();
-			} else if (window.ActiveXObject) {
-				peticion = new ActiveXObject("Microsoft.XMLHTTP");
-			}
-
-			peticion.open('GET', 'ajax_05.php?editorial='+editorial, true);
-			peticion.send(null);
-
-			peticion.onreadystatechange = function (evento) {
-				if ((peticion.readyState == 4) && (peticion.status == 200)) {
-					var libros=JSON.parse(peticion.responseText);
-					var selecion=document.getElementById("selectLibros");
-					selecion.innerHTML="";
-
-					for (let i = 0; i < libros.length; i++) {
-						var text=libros[i].titulo;
-						var opcion=document.createElement("option");
-						opcion.innerHTML=text;
-						opcion.setAttribute("value", libros[i].isbn);
-						selecion.appendChild(opcion);
-					}
-
-					console.log(libros[0].titulo);
-
+				var peticion;
+				librosEdit.innerHTML = "";
+				if (window.XMLHttpRequest) {
+					peticion = new XMLHttpRequest();
+				} else if (window.ActiveXObject) {
+					peticion = new ActiveXObject("Microsoft.XMLHTTP");
 				}
-			}
 
+				var editorialEle=editorial.value;
+				peticion.open('GET', 'ajax_05.php?editorial=' + editorialEle, true);
+				peticion.send(null);
+
+				peticion.onreadystatechange = function (evento) {
+					if ((peticion.readyState == 4) && (peticion.status == 200)) {
+					var libros=JSON.parse(peticion.responseText);
+						libros.forEach(function (elemento) {
+							opcion=document.createElement("option");
+							opcion.innerHTML=elemento.titulo;
+							opcion.setAttribute("value", elemento.isbn);
+							librosEdit.appendChild(opcion);
+							//console.log(elemento.titulo);
+						});
+
+					
+					
+					}
+				}
 		}
 
 	</script>
