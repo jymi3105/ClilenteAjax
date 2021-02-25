@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Examen de Jorge Miranda Izcara</title>
+    <script type="text/javascript" src="recursos/jsPDF/jspdf.js"></script>
+    <script type="text/javascript" src="../recursos/jquery-3.5.1.js"></script>
+    <style>
+        #contenido {
+            border: 1px solid red;
+        }
+
+        #contenido p{
+            font-size: 25px;
+            color: red;
+        }
+    </style>
+</head>
+<body">
+    <h1>Examen de Jorge Miranda Izcara</h1>
+    <hr />
+
+    <DIV><span>Precio minimo: </span>
+        <input type="number" id="pMin">
+    </DIV><br><br>
+
+    <DIV><span>Precio maximo: </span>
+        <input type="number" id="pMax">
+    </DIV><br><br>
+
+    <button onclick="consultarRegistros()">Realizar pedido</button><br><br>
+
+    <div id="contenido"></div><br><br>
+
+    <button onclick="consultarLibro()">Consultar libro</button>
+    <button onclick="borrarLibro()">Borrar libro</button>
+
+
+    <script type="text/javascript">
+        var isbn, titulo, autor, editorial, paginas, precio;
+        function consultarLibro() {
+            var radios = document.getElementsByClassName("titulos");
+
+            for (let i = 0; i < radios.length; i++) {
+                if (radios[i].checked) {
+                    isbn = radios[i].getAttribute('id');
+                    titulo = radios[i].getAttribute('titulo');
+                    autor = radios[i].getAttribute('autor');
+                    editorial = radios[i].getAttribute('editorial');
+                    paginas = radios[i].getAttribute('paginas');
+                    precio = radios[i].getAttribute('precio');
+                }
+            }
+
+            crearPDF();
+
+        }
+
+
+
+        function consultarRegistros() {
+            var pMin = document.getElementById("pMin").value;
+            var pMax = document.getElementById("pMax").value;
+            var contenido = document.getElementById("contenido");
+            contenido.innerHTML = "";
+            var parametros = 'preciomin=' + pMin + '&preciomax=' + pMax;
+
+            if (window.XMLHttpRequest) {
+                peticion = new XMLHttpRequest;
+            } else if (window.ActiveXObject) {
+                peticion = new ActiveXObject('Microsoft.XMLHTTP');
+            }
+
+            peticion.open('GET', 'examen1.php?' + parametros, true);
+            peticion.send(null);
+
+            peticion.onreadystatechange = function () {
+                if ((peticion.readyState == 4) && (peticion.status == 200)) {
+                    var datos = JSON.parse(peticion.responseText);
+                    var radio, texto;
+                    for (let i = 0; i < datos.length; i++) {
+                        texto = document.createElement("span");
+                        texto.innerHTML = datos[i].titulo + "<br/>";
+                        radio = document.createElement("input");
+                        radio.setAttribute("type", "radio");
+                        radio.setAttribute("class", "titulos");
+                        radio.setAttribute("name", "libros");
+                        radio.setAttribute("value", datos[i].isbn);
+                        radio.setAttribute("id", datos[i].isbn);
+                        radio.setAttribute("titulo", datos[i].titulo);
+                        radio.setAttribute("autor", datos[i].autor);
+                        radio.setAttribute("editorial", datos[i].editorial);
+                        radio.setAttribute("paginas", datos[i].paginas);
+                        radio.setAttribute("precio", datos[i].precio);
+                        contenido.appendChild(radio);
+                        contenido.appendChild(texto);
+
+                    }
+                }
+            }
+        }
+
+        function borrarLibro() {
+            var radios = document.getElementsByClassName("titulos");
+            var parametro;
+            for (let i = 0; i < radios.length; i++) {
+                if (radios[i].checked) {
+                    parametro = 'codigo=' + radios[i].value;
+                }
+            }
+            console.log(parametro);
+
+            if (window.XMLHttpRequest) {
+                peticion = new XMLHttpRequest;
+            } else if (window.ActiveXObject) {
+                peticion = new ActiveXObject('Microsoft.XMLHTTP');
+            }
+
+            peticion.open('GET', 'examen2.php?' + parametro, true);
+            peticion.send(null);
+
+            peticion.onreadystatechange = function () {
+                if ((peticion.readyState == 4) && (peticion.status == 200)) {
+                    var resp = peticion.responseText;
+                    console.log(resp);
+                    document.getElementById("contenido").innerHTML ="<p>" + resp + "</p>";
+                }
+            }
+        }
+
+        function crearPDF() {
+            var pdf = new jsPDF();
+
+            pdf.setFontStyle("bold");
+            pdf.text(30, 30, "ISBN: ");
+            pdf.text(70, 30, isbn);
+            pdf.text(30, 45, "TITULO: ");
+            pdf.text(70, 45, titulo);
+            pdf.text(30, 60, "AUTOR: ");
+            pdf.text(70, 60, autor);
+            pdf.text(30, 75, "EDITORIAL: ");
+            pdf.text(70, 75, editorial);
+            pdf.text(30, 90, "PAGINAS: ");
+            pdf.text(70, 90, paginas);
+            pdf.text(30, 105, "PRECIO: ");
+            pdf.text(70, 105, precio + " EUROS");
+
+            var es_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+
+            if (es_chrome) {
+                var win = window.open();
+                win.document.write('<iframe src="' + pdf.output('datauri') + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>');
+            }
+
+            var es_firefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+            if (es_firefox) {
+                pdf.output('datauri');
+            }
+        }
+
+    </script>
+    </body>
+
+</html>
